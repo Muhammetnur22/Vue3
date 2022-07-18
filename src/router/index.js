@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Eventlist from "../views/EventList.vue";
+import EventDetails from "../views/EventDetails.vue"
 import About from "../views/AboutT.vue";
 
 
@@ -8,6 +9,12 @@ const routes = [
     path: "/",
     name: "EventList",
     component: Eventlist,
+  },
+  {
+    path: "/event/:id",
+    name: "EventDetails", 
+    props: true,
+    component: EventDetails
   },
   {
     path: "/about",
