@@ -42,7 +42,6 @@ export default {
   },
 
   beforeRouteEnter(routeTo, routeFrom, next){
-    NProgess.start()
     EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
       .then(response => {
         next(comp =>{
@@ -50,16 +49,10 @@ export default {
           comp.totalEvents = response.headers['x-total-count']
         })
       })
-      .catch(() => {
-        next({name: 'NetworkError'})
-      })
-      .finally(()=>{
-        NProgess.done()
-      })
   },
+  
   beforeRouteUpdate(routeTo){
-    NProgess.start()
-    EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
+    return EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
       .then(response => {
           this.events = response.data
           this.totalEvents = response.headers['x-total-count']
@@ -67,9 +60,7 @@ export default {
       .catch(() => {
         return { name: 'NetworkError' }
       })
-      .finally(()=>{
-        NProgess.done()
-      })
+      
     },
   computed: {
     hasNextPage() {
