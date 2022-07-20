@@ -1,77 +1,72 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Eventlist from "../views/EventList.vue";
-import EventLayout from "../views/event/LayouT.vue"
-import EventDetails from "../views/event/DetailS.vue"
-import EventRegister from "../views/event/RegisteR.vue"
-import EventEdit from "../views/event/EdiT.vue"
-import About from "../views/AboutT.vue";
-import NotFound from "../views/NotFound.vue";
-import NetworkError from "../views/NetworkError.vue";
+import { createRouter, createWebHistory } from 'vue-router'
+import EventList from '../views/EventList.vue'
+import EventLayout from '../views/event/LayouT.vue'
+import EventDetails from '../views/event/DetailS.vue'
+import EventRegister from '../views/event/RegisteR.vue'
+import EventEdit from '../views/event/EdiT.vue'
+import About from '../views/AboutT.vue'
+import NotFound from '@/views/NotFound.vue'
+import NetworkError from '@/views/NetworkError.vue'
 import NProgress from 'nprogress'
-import EventService  from "@/services/EventService.js"
+import EventService from '@/services/EventService.js'
 import GStore from '@/store'
-
 
 const routes = [
   {
-    path: "/",
-    name: "EventList",
-    component: Eventlist,
-    props: route => ({ page: parseInt(route.query.page) || 1})
+    path: '/',
+    name: 'EventList',
+    component: EventList,
+    props: route => ({ page: parseInt(route.query.page) || 1 })
   },
   {
-    path: "/events/:id",
-    name: "EventLayout", 
+    path: '/events/:id',
+    name: 'EventLayout',
     props: true,
     component: EventLayout,
     beforeEnter: to => {
       return EventService.getEvent(to.params.id)
-        .then(response =>{
-            GStore.event = response.data
+        .then(response => {
+          GStore.event = response.data
         })
-        .catch(error =>{
-             console.log(error)
-            if( error.response && error.response.status === 404 ){
-                return {
-                    name: '404Resource',
-                    params: { resource: 'event' }
-                }
+        .catch(error => {
+          if (error.response && error.response.status == 404) {
+            return {
+              name: '404Resource',
+              params: { resource: 'event' }
             }
-            else{
-                return {name: 'NetworkError'}
-            }
-        }
-      )
+          } else {
+            return { name: 'NetworkError' }
+          }
+        })
     },
     children: [
       {
-        path: "",
-        name: "EventDetails", 
+        path: '',
+        name: 'EventDetails',
         component: EventDetails
       },
       {
-        path: "register",
-        name: "EventRegister", 
+        path: 'register',
+        name: 'EventRegister',
         component: EventRegister
       },
       {
-        path: "edit",
-        name: "EventEdit", 
+        path: 'edit',
+        name: 'EventEdit',
         component: EventEdit
-      },
+      }
     ]
   },
   {
-    path: "/event/:afterEvent(.*)",
-    redirect: to =>{
-      return { path: '/events/'+ to.params.afterEvent}
+    path: '/event/:afterEvent(.*)',
+    redirect: to => {
+      return { path: '/events/' + to.params.afterEvent }
     }
   },
   {
-    path: "/about-us",
-    name: "About", 
-    component: About,
-    alias: '/about'
+    path: '/about',
+    name: 'About',
+    component: About
   },
   {
     path: '/:catchAll(.*)',
@@ -87,25 +82,21 @@ const routes = [
   {
     path: '/network-error',
     name: 'NetworkError',
-    component: NetworkError,
+    component: NetworkError
   }
-  
-];
+]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes,
-  scrollBehavior(){
-    return {top: 0}
-  }
-});
+  routes
+})
 
-router.beforeEach(() =>{
+router.beforeEach(() => {
   NProgress.start()
 })
 
-router.afterEach(() =>{
+router.afterEach(() => {
   NProgress.done()
 })
 
-export default router;
+export default router

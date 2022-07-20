@@ -26,8 +26,6 @@
 <script>
 import EventCard from '@/components/EventCard.vue'
 import EventService from '@/services/EventService.js'
-import NProgess from 'nprogress'
-
 export default {
   name: 'EventList',
   props: ['page'],
@@ -40,28 +38,28 @@ export default {
       totalEvents: 0
     }
   },
-
-  beforeRouteEnter(routeTo, routeFrom, next){
+  beforeRouteEnter(routeTo, routeFrom, next) {
     EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
       .then(response => {
-        next(comp =>{
+        next(comp => {
           comp.events = response.data
           comp.totalEvents = response.headers['x-total-count']
         })
       })
+      .catch(() => {
+        next({ name: 'NetworkError' })
+      })
   },
-  
-  beforeRouteUpdate(routeTo){
+  beforeRouteUpdate(routeTo) {
     return EventService.getEvents(2, parseInt(routeTo.query.page) || 1)
       .then(response => {
-          this.events = response.data
-          this.totalEvents = response.headers['x-total-count']
+        this.events = response.data
+        this.totalEvents = response.headers['x-total-count']
       })
       .catch(() => {
         return { name: 'NetworkError' }
       })
-      
-    },
+  },
   computed: {
     hasNextPage() {
       var totalPages = Math.ceil(this.totalEvents / 2)

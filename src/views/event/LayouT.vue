@@ -1,5 +1,5 @@
 <template>
-    <div v-if="event">
+    <div v-if="GStore.event">
         <h1>{{ GStore.event.title }}</h1>
         <div id="nav">
             <router-link :to="{ name: 'EventDetails' }">Details</router-link>
